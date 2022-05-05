@@ -17,25 +17,47 @@ const useField = (type) => {
 
 const useCountry = (name) => {
   const [country, setCountry] = useState(null)
+  console.log(name);
 
-  useEffect(() => {})
+
+  useEffect(() => {
+    if (name) {
+        axios
+          .get(`https://restcountries.com/v3.1/name/${name}?fullText=true`)
+          .then(response => {
+            console.log('response: ', response);
+            setCountry(response.data[0])
+          })
+          .catch(function () {
+              setCountry('')
+          })
+    }
+  }, [name])
+  console.log('country du hook: ', country);
+
+  if (name === '' || country === '') {
+    return null
+  }
 
   return country
 }
 
 const Country = ({ country }) => {
+  console.log('country du component: ', country);
+
   if (!country) {
     return <div>not found...</div>
   }
 
+
   return (
     <div>
       <h3>{country.name.common}</h3>
-      <div>population {country.population}</div> 
+      <div>population {country.population}</div>
       <div>capital {country.capital}</div>
-      <img src={country.flags.png} height='100' alt={`flag of ${country.name.common}`}/> 
+      <img src={country.flags.png} height='100' alt={`flag of ${country.name.common}`}/>
     </div>
-  )  
+  )
 }
 
 const App = () => {
